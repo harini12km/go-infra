@@ -187,10 +187,20 @@ func NewTempCloneRepo(src string) (string, error) {
 	return d, nil
 }
 
-// AttemptDelete tries to delete the git dir. If an error occurs, log it, but this is not fatal.
-// gitDir is expected to be in a temp dir, so it will be cleaned up later by the OS anyway.
+
+// CheckRepoStatus checks and logs the status of a Git repository.
+func CheckRepoStatus(dir string) (string, error) {
+	return CombinedOutput(dir, "status")
+}
+
+// ListBranches lists all branches in the repository.
+func ListBranches(dir string) (string, error) {
+	return CombinedOutput(dir, "branch", "-a")
+}
+
+// AttemptDelete attempts to delete a Git directory, logging errors if any.
 func AttemptDelete(gitDir string) {
 	if err := os.RemoveAll(gitDir); err != nil {
-		log.Printf("Unable to clean up git repository directory %#q: %v\n", gitDir, err)
+		log.Printf("Failed to delete Git directory %#q: %v\n", gitDir, err)
 	}
 }
